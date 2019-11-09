@@ -19,7 +19,7 @@ void setup() {
 
 void loop() {
   // Yay... a "Hello World!"
-  u8x8.setFont(u8x8_font_chroma48medium8_r);
+  u8x8.setFont(u8x8_font_amstrad_cpc_extended_f);
   u8x8.drawString(0,0,"Hello World!");
   delay(2000);
 }
