@@ -10,6 +10,9 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 
+// include CayenneLPP library
+#include <CayenneLPP.h>
+
 // define the I2C pins
 // TTGO v2.1 - T3_v1.6
 #define I2C_SDA 21
@@ -18,6 +21,12 @@
 // create the BME280 sensor
 #define SEALEVELPRESSURE_HPA (1039.00)
 Adafruit_BME280 bme280;
+float temperature;
+float pressure;
+float humidity;
+
+// create CayenneLPP data container
+CayenneLPP lpp(51);
 
 // define the GPIOs for the display
 // NOTE: this will cause warning during the compilation, because we overwrite the
@@ -52,25 +61,31 @@ void setup() {
 }
 
 void loop() {
+  // read sensor data
+  temperature = bme280.readTemperature();
+  pressure = bme280.readPressure() / 100.0F;
+  humidity = bme280.readHumidity();
+
   // show sensor data on the display
   u8x8.setCursor(0, 0);
   u8x8.clearDisplay();
   u8x8.print("Temp = ");
-  u8x8.print(bme280.readTemperature());
+  u8x8.print(temperature);
   u8x8.println("*C");
 
   u8x8.print("Pre = ");
-
-  u8x8.print(bme280.readPressure() / 100.0F);
+  u8x8.print(pressure);
   u8x8.println("hPa");
 
-  u8x8.print("Alt = ");
-  u8x8.print(bme280.readAltitude(SEALEVELPRESSURE_HPA));
-  u8x8.println("m");
-
   u8x8.print("Hum = ");
-  u8x8.print(bme280.readHumidity());
+  u8x8.print(humidity);
   u8x8.println("%");
+
+  // prepare sensordata for LoRaWAN transmission
+  lpp.reset();
+  lpp.addTemperature(1, temperature);
+  lpp.addBarometricPressure(2, pressure);
+  lpp.addRelativeHumidity(3, humidity);
 
   delay(2000);
 }
