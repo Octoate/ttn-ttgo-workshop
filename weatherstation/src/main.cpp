@@ -1,6 +1,8 @@
 // include default platform libraries
 #include <Arduino.h>
 #include <Wire.h>
+
+// include IBM LMIC LoRaWAN stack
 #include <lmic.h>
 #include <hal/hal.h>
 
