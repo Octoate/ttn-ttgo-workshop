@@ -4,7 +4,7 @@ Projekt noch übernehmen müsst.
 Einzubindende Bibliotheken:
 ===========================
 
-```Arduino
+```C
 // include IBM LMIC LoRaWAN stack
 #include <lmic.h>
 #include <hal/hal.h>
@@ -15,7 +15,7 @@ Funktionsdeklarationen:
 
 Definition der *"do_Send(...)"* Methode (wird hinzugefügt).
 
-```Arduino
+```C
 // function declarations
 void do_send(osjob_t* j);
 ```
@@ -25,7 +25,7 @@ Deklarationen:
 
 In diesem Teil werden die Keys zur Kommunikation festgelegt, wir verwenden hier ABP (Authentication By Personalization). Im Anschluß wird das Sendeintervall des Sendejobs definiert und die zur Kommunikation mit dem LoRa Transceiver auf dem Development Board notwendigen Pins definiert. Zum Schluß folgt die Definition für die OTAA Callbacks (werden bei ABP nicht verwendet, ein Weglassen würde aber zu Warnings während der Compilierung führen) und des Sendejobs, der periodisch ausgeführt werden soll.
 
-```Arduino
+```C
 // LoRaWAN NwkSKey, network session key
 // generated: { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }
 static const PROGMEM u1_t NWKSKEY[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
@@ -73,7 +73,7 @@ Danach wird noch der Spreading Factor für das RX2 Window eines Datenpaketes ges
 
 Zum Abschluß wird der Job zum Senden der Daten zum ersten Mal in den Scheduler des LMIC Stacks eingereiht und ausgeführt.
 
-```Arduino
+```C
   // set up LoRaWAN
   // LMIC init
   os_init();
@@ -145,7 +145,7 @@ Loop() (komplett ersetzen):
 
 In der Loop wird nur noch die *"Run"* Methode des LMIC Stacks aufgerufen. Alles Weitere (Verwaltung der Threads, Einhaltung der Duty Cycle, Ansprechen der Hardware, etc.) wird vom Stack übernommen.
 
-```Arduino
+```C
 void loop() 
 {
   os_runloop_once();
@@ -159,7 +159,7 @@ Sobald der LMIC Stack ein Event aus dem LoRaWAN Netzwerk empfängt, wird die *"o
 
 Wichtig ist hier der Fall *"TX_COMPLETE"*. Er wird aufgerufen, wenn die Daten erfolgreich gesendet werden konnten. In diesem Schritt werden außerdem die Daten aus dem RX Window des Gateways entgegengenommen (Daten, die von der Application an den Knoten gesendet wurden) und ___ganz wichtig___ der Sendejob wird wieder eingereiht.
 
-```Arduino
+```C
 // LoRaWAN event handling
 void onEvent (ev_t ev) {
   Serial.print(os_getTime());
@@ -250,7 +250,7 @@ void onEvent (ev_t ev) {
 
 In der Sendemethode wird zuerst überprüft, ob evtl. noch ein Sendejob läuft. In diesem Fall wird der zu sendende Job verworfen. Sollte kein aktiver Job vorhanden sein, werden die Daten aufbereitet und dem LMIC Stack übergeben. Wenn die Duty Cycle eingehalten wurde, wird das Paket direkt gesendet, ansonsten wird es so lange verzögert, bis man wieder innerhalb der Grenzen senden kann.
 
-```Arduino
+```C
 // send the prepared data packet via LoRaWAN
 void do_send(osjob_t* j) 
 {
