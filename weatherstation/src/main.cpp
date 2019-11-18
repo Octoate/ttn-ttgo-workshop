@@ -218,6 +218,7 @@ void displaySensorData()
   u8x8.println("%");
 }
 
+// LoRaWAN event handling
 void onEvent (ev_t ev) {
   Serial.print(os_getTime());
   Serial.print(": ");
@@ -304,6 +305,7 @@ void onEvent (ev_t ev) {
   }
 }
 
+// send the prepared data packet via LoRaWAN
 void do_send(osjob_t* j) 
 {
   // Check if there is not a current TX/RX job running
