@@ -71,7 +71,7 @@ float temperature;
 float pressure;
 float humidity;
 
-// create CayenneLPP data container
+// create CayenneLPP data container - 51 bytes max. payload
 CayenneLPP lpp(51);
 
 // define the display type that we use
