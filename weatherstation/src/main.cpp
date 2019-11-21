@@ -77,7 +77,7 @@ float humidity;
 CayenneLPP lpp(51);
 
 // define the display type that we use
-U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8(/* clock=*/ OLED_SCL, /* data=*/ OLED_SDA, /* rst */ OLED_RST);
+U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8(/* rst */ OLED_RST);
 
 void setup() 
 {
